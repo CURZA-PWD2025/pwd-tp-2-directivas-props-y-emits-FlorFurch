@@ -42,10 +42,11 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #e4e4e4;
+  background-color: #b8b8b8;
   cursor: pointer;
   transition: border-color 0.25s;
   color: #443853;
+  margin-top: 20px;
 }
 button:hover {
   border-color: #443853;
@@ -64,6 +65,11 @@ button:focus-visible {
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+}
+
+img{
+  width: 168px;
+  height: auto;
 }
 
 @media (prefers-color-scheme: light) {

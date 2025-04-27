@@ -1,51 +1,53 @@
 <template>
   <div class="card">
-    <div class="img"><img :src="pelicula.portada" :alt="pelicula.titulo" height="218px" /></div>
-    <h3>{{ pelicula.titulo }}<br/>({{ pelicula.anio }})</h3>
-    <p><strong>Director:</strong> {{ pelicula.director }}</p>
-    <p><strong>Géneros:</strong> {{ pelicula.generos.join(', ') }}</p>
-    <p><strong>Likes:</strong> {{ likes }}</p>
-    <button @click="incrementarLike">❤️ Like</button>
+    <img v-if="pelicula.portada" :src="pelicula.portada" alt="Portada"/>
+    <div v-else>
+  Imagen de portada no encontrada
+</div>
+    <h2>{{ pelicula.titulo }}</h2>
+    <p>{{ pelicula.generos.join(" / ") }}</p>
+    <p>{{ pelicula.anio }}</p>
+    <div>
+      <button @click="toggleLike">
+        {{ isLiked ? 'No me gusta' : 'Me gusta!' }}
+      </button>
+      
+    </div>
+    <div><span>❤️ {{ pelicula.likes }}</span></div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import type { PropType } from 'vue';
+import type { Pelicula } from '../Interfaces/Pelicula';
 
 export default defineComponent({
   name: 'CardComponent',
   props: {
     pelicula: {
-      type: Object as PropType<{
-        id: number;
-        titulo: string;
-        generos: string[];
-        anio: number;
-        director: string;
-        likes: number;
-        portada: string;
-      }>,
-      required: true
-    }
+      type: Object as PropType<Pelicula>,
+      required: true,
+    },
   },
-  setup(props) {
-    const likes = ref(props.pelicula.likes);
+  setup(props, { emit }) {
+    const isLiked = ref(false);
 
-    const incrementarLike = () => {
-      likes.value++;
+    const toggleLike = () => {
+      isLiked.value = !isLiked.value;
+      emit('toggle-like', { id: props.pelicula.id, liked: isLiked.value });
     };
 
     return {
-      likes,
-      incrementarLike
+      isLiked,
+      toggleLike,
     };
-  }
+  },
 });
 </script>
 
 <style scoped>
-.card {
+    .card {
   border: 1px solid #ccc;
   padding: 1rem;
   margin: 1rem;
@@ -56,20 +58,22 @@ export default defineComponent({
     justify-items: center;
     align-content: stretch;
     align-items: end;
-}
-.img{
-  height: 250px;
-}
-button {
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  margin-top: 0.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-button:hover {
-  background-color: #c0392b;
-}
+    }
+
+    h1{
+        font-size: 1.5rem;
+        color: #443853;
+    }
+
+    p{
+        line-height: normal;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    div{
+      padding: 2px;
+    }
+
+
 </style>

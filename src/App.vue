@@ -1,25 +1,45 @@
-<template lang="">
+<template>
   <div class="container">
-
-    <div v-for="(pelicula, index) in peliculas" :key="pelicula.id">
-      <Card :pelicula="pelicula" @like="actualizarLikes" />
-    </div>
-
+    <CardComponent
+      v-for="pelicula in peliculas"
+      :key="pelicula.id"
+      :pelicula="pelicula"
+      @toggle-like="handleToggleLike"
+    />
   </div>
 </template>
 
-<script setup>
-import { reactive } from 'vue';
-import Card from './components/Card.vue';
-import { peliculas as dataPeliculas } from './Interfaces/Pelicula';
+<script lang="ts">
+import { defineComponent, ref } from 'vue';
+import { peliculas as peliculasData } from './resources/peliculas';
+import type { Pelicula } from './Interfaces/Pelicula';
+import CardComponent from './components/CardComponent.vue';
 
-const peliculas = reactive([...dataPeliculas]);
-const actualizarLikes = ({ id, likes }) => {
-  const pelicula = peliculas.find(p => p.id === id);
-  if (pelicula) {
-    pelicula.likes = likes;
-  }
-};
+export default defineComponent({
+  name: 'App',
+  components: {
+    CardComponent,
+  },
+  setup() {
+    const peliculas = ref<Pelicula[]>(peliculasData);
+
+    const handleToggleLike = (data: { id: number; liked: boolean }) => {
+      const pelicula = peliculas.value.find(p => p.id === data.id);
+      if (pelicula) {
+        if (data.liked) {
+          pelicula.likes++;
+        } else {
+          pelicula.likes--;
+        }
+      }
+    };
+
+    return {
+      peliculas,
+      handleToggleLike,
+    };
+  },
+});
 </script>
 
 <style scoped>
